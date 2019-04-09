@@ -48,7 +48,7 @@ def extract_movies(dom):
         films = movie.find_all("a")
         stars = ""
         for film in films:
-            if "_st_" in film['href']:
+            if "_st_" in film["href"]:
                 if stars == "":
                     stars += film.string
                 else:
