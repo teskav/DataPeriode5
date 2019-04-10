@@ -27,24 +27,27 @@ def extract_movies(dom):
     - Runtime (only a number!)
     """
 
-    # extract the list of highest rated movies
+    # Extract the list of highest rated movies
     movies_IMDB = dom.find_all("div", class_="lister-item-content")
+
+    # Make empty movie list
     movies = []
     one_movie = []
 
+    # Loop over the movies to add every scraped movie to list
     for movie in movies_IMDB:
 
-        # append the title
+        # Append the title
         one_movie.append(movie.h3.a.string)
 
-        # append the rating
+        # Append the rating
         one_movie.append(movie.div.div.strong.string)
 
-        # append the year of release
+        # Append the year of release
         spans = movie.h3.find_all("span")
         one_movie.append(spans[1].string.strip("()I "))
 
-        # append the actors
+        # Append the actors
         films = movie.find_all("a")
         stars = ""
         for film in films:
@@ -55,19 +58,14 @@ def extract_movies(dom):
                     stars += ", " + film.string
         one_movie.append(stars)
 
-        # append the runtime
+        # Append the runtime
         one_movie.append(movie.p.find("span", class_="runtime").string.strip("nim "))
 
-        # append movie to the list of movies
+        # Append movie to the list of movies
         movies.append(one_movie)
         one_movie = []
 
-    # ADD YOUR CODE HERE TO EXTRACT THE ABOVE INFORMATION ABOUT THE
-    # HIGHEST RATED MOVIES
-    # NOTE: FOR THIS EXERCISE YOU ARE ALLOWED (BUT NOT REQUIRED) TO IGNORE
-    # UNICODE CHARACTERS AND SIMPLY LEAVE THEM OUT OF THE OUTPUT.
-
-    return [movies]   # REPLACE THIS LINE AS WELL IF APPROPRIATE
+    return [movies]
 
 
 def save_csv(outfile, movies):
@@ -77,9 +75,9 @@ def save_csv(outfile, movies):
     writer = csv.writer(outfile)
     writer.writerow(['Title', 'Rating', 'Year', 'Actors', 'Runtime'])
 
+    # Write movies to disk
     for movie in movies:
         writer.writerows(movie)
-    # ADD SOME CODE OF YOURSELF HERE TO WRITE THE MOVIES TO DISK
 
 
 def simple_get(url):

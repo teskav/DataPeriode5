@@ -3,6 +3,12 @@
 # Student number: 11046341
 """
 This script visualizes data obtained from a .csv file
+We want to answer the question:
+Were there any years in which movies (from the top 50) scored significantly higher?
+To answer this, it returns a line chart with the average ratings of the movies
+per release year. It also returns a line chart with the number of movies
+in the top 50 per year, since this is also important to know if we want to find
+out if there are better years between 2008 and 2018,
 """
 
 import csv
@@ -19,6 +25,7 @@ data_dict = {str(key): [] for key in range(START_YEAR, END_YEAR)}
 # Global dictionary for the average rating
 average = {str(year): [] for year in range(START_YEAR, END_YEAR)}
 
+
 def load_csv(infile):
     """
     This function loads the years and ratings from the csv file to a dictionary.
@@ -33,6 +40,7 @@ def load_csv(infile):
 
     return[data_dict]
 
+
 def average_rat(dictionary):
     """
     This function calculates the average rating per year.
@@ -42,6 +50,7 @@ def average_rat(dictionary):
         average[year].append(sum(dictionary[year])/len(dictionary[year]))
 
     return[average]
+
 
 def visualize(data):
     """
@@ -59,14 +68,15 @@ def visualize(data):
     # Plot the line chart of average ratings
     plt.subplot(211)
     plt.plot(years, ratings,'y')
-    plt.ylim(8.2,8.8)
+
+    # Make the y-axis 0-10 because movies can get ratings between 0-10
+    plt.ylim(0,10)
     plt.ylabel('Average rating')
     plt.title('Ratings & numbers of movies in IMDB top 50 per year')
 
-    # Plot the chart of number of movies
+    # Plot the line chart of number of movies
     plt.subplot(212)
-    plt.plot(years, number, 'bo')
-    plt.ylim(0,10)
+    plt.plot(years, number, 'b')
     plt.xlabel('Release year')
     plt.ylabel('Number of movies')
     plt.show()
