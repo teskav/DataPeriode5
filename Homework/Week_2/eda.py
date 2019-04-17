@@ -51,7 +51,7 @@ def central_tendency(gdp):
     GDP_mode = gdp.mode()[0]
     GDP_std = gdp.std()
 
-    # Print the mean, median, mode and stf of the GDP
+    # Print the mean, median, mode and std of the GDP
     print("GDP Central Tendency:\n"
           "The mean of the GDP ($ per capita):", round(GDP_mean),
           "\nThe median of the GDP ($ per capita):", round(GDP_median),
@@ -91,8 +91,9 @@ def five_number(infant_mortality):
     plt.ylabel('Amount (per 1000 births)')
     plt.xticks([1], ['Infant Mortality'])
     plt.title("Distribution of the Infant Mortality in 227 countries")
-    fig_manager = plt.get_current_fig_manager()
-    fig_manager.window.showMaximized()
+    # Get figure in full screen
+    maximize = plt.get_current_fig_manager()
+    maximize.window.showMaximized()
     plt.show()
 
 def convert_JSON(df):
