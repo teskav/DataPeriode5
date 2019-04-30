@@ -1,0 +1,126 @@
+<!–– Name: Teska Vaessen
+     Studentnumber: 11046341
+     This file creates a web page for my line chart––>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Line chart</title>
+  </head>
+
+  <body bgcolor="#CBF5F2" style="font-family:arial"">
+    <h1>Harmonised Unemployment Rate per month in the Netherlands</h1>
+    <p>Teska Vaessen (11046341), Data Processing assignment week 3</p>
+    <canvas id="lineChart" width="1100" height="450"></canvas>
+    <script>
+        const canvasBeginX = 50;
+        const canvasBeginY = 450;
+        const canvasEndY = 50;
+        const canvasEndX = 1100;
+        // Load the JSON file in browser
+        var fileName = "data.json";
+        var txtFile = new XMLHttpRequest();
+        txtFile.onreadystatechange = function() {
+            if (txtFile.readyState === 4 && txtFile.status == 200) {
+                data = JSON.parse(txtFile.responseText);
+                // console.log(data);
+
+                // for (key in data){
+                //     console.log(key);
+                //     console.log((new Date(key)).getTime());
+                //     console.log(data[key]["Unemployment rate"]);
+                // }
+
+                reformatData(data);
+                console.log(min_x);
+                console.log(max_x);
+                console.log(min_y);
+                console.log(max_y);
+
+                lineChart();
+
+                // GET DATE BACK
+                // console.log(new Date(max_x).getYear() + 1900)
+
+            }
+        }
+
+        txtFile.open("GET", fileName);
+        txtFile.send();
+
+        function reformatData(data){
+            x_values = []
+            y_values = []
+            for (key in data){
+                x_values.push((new Date(key)).getTime())
+                y_values.push(data[key]["Unemployment rate"])
+            }
+            max_x = Math.max.apply(null, x_values)
+            min_x = Math.min.apply(null, x_values)
+            max_y = Math.max.apply(null, y_values)
+            min_y = Math.min.apply(null, y_values)
+        }
+
+        function lineChart(){
+            // define xScale and yScale and length of the data
+            let xScale = createTransform([min_x, max_x], [canvasBeginX, canvasEndX]);
+            let yScale = createTransform([min_y - 0.1, max_y], [canvasBeginY, canvasEndY]);
+            var dataLength = x_values.length;
+            console.log(dataLength)
+
+            const canvas = document.getElementById('lineChart');
+            const ctx = canvas.getContext('2d');
+
+            // loop over data to draw lines of line chart
+            ctx.beginPath();
+            ctx.strokeStyle = "red";
+            ctx.moveTo(canvasBeginX, canvasBeginY);
+            for(var i = 0; i < dataLength; i++){
+                ctx.lineTo(xScale(x_values[i]),yScale(y_values[i]));
+            }
+            ctx.stroke();
+
+            // draw the x axis and the y axis
+            ctx.beginPath();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "black";
+            // draw x axis
+            ctx.moveTo(canvasBeginX, canvasBeginY);
+            ctx.lineTo(canvasEndX, canvasBeginY);
+            // draw y axis
+            ctx.moveTo(canvasBeginX, canvasBeginY);
+            ctx.lineTo(canvasBeginX, canvasEndY);
+            ctx.stroke();
+
+            // draw labels and ticks (ticks are also lines)
+
+
+
+        }
+
+        function createTransform(domain, range){
+            	// domain is a two-element array of the data bounds [domain_min, domain_max]
+            	// range is a two-element array of the screen bounds [range_min, range_max]
+            	// this gives you two equations to solve:
+            	// range_min = alpha * domain_min + beta
+            	// range_max = alpha * domain_max + beta
+             		// a solution would be:
+
+            var domain_min = domain[0]
+            var domain_max = domain[1]
+            var range_min = range[0]
+            var range_max = range[1]
+
+            // formulas to calculate the alpha and the beta
+           	var alpha = (range_max - range_min) / (domain_max - domain_min)
+            var beta = range_max - alpha * domain_max
+
+            // returns the function for the linear transformation (y= a * x + b)
+            return function(x){
+              return alpha * x + beta;
+            }
+        }
+        </script>
+  </body>
+
+</html>
