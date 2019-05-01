@@ -1,6 +1,6 @@
 <!–– Name: Teska Vaessen
      Studentnumber: 11046341
-     This file creates a web page for my line chart––>
+     This file creates a line chart of the unemployment rate in the Netherlands. ––>
 
 <!DOCTYPE html>
 <html>
@@ -8,40 +8,21 @@
     <title>Line chart</title>
   </head>
 
-  <body bgcolor="#CBF5F2" style="font-family:arial"">
-    <h1>Harmonised Unemployment Rate per month in the Netherlands</h1>
-    <p>Teska Vaessen (11046341), Data Processing assignment week 3</p>
-    <canvas id="lineChart" width="1120" height="475"></canvas>
+  <body bgcolor="#D2E7E6" style="font-family:arial">
+    <h1>Line chart of the unemployment in the Netherlands from 2000 - 2018 (monthly data)</h1>
+    <p>Teska Vaessen (11046341), Data Processing assignment week 3: Line chart of  unemployment rate in the Netherlands from 01-2000 till 12-2018.</p>
+    <p align="right" valign="top" style="font-size:12px"><a href="https://data.oecd.org/unemp/harmonised-unemployment-rate-hur.htm">OECD</a> (2019), Harmonised unemployment rate (HUR) (indicator)<br>. doi: 10.1787/52570002-en (Accessed on 01 May 2019)</p>
+    <canvas id="lineChart" width="1120" height="500"></canvas>
     <script>
-        const canvasBeginX = 50;
-        const canvasBeginY = 450;
-        const canvasEndY = 50;
-        const canvasEndX = 1095;
         // Load the JSON file in browser
         var fileName = "data.json";
         var txtFile = new XMLHttpRequest();
         txtFile.onreadystatechange = function() {
             if (txtFile.readyState === 4 && txtFile.status == 200) {
                 data = JSON.parse(txtFile.responseText);
-                console.log(data);
-
-                // for (key in data){
-                //     console.log(key);
-                //     console.log((new Date(key)).getTime());
-                //     console.log(data[key]["Unemployment rate"]);
-                // }
 
                 reformatData(data);
-                console.log(min_x);
-                console.log(max_x);
-                console.log(min_y);
-                console.log(max_y);
-
                 lineChart();
-
-                // GET DATE BACK
-                // console.log(new Date(max_x).getYear() + 1900)
-
             }
         }
 
@@ -62,11 +43,16 @@
         }
 
         function lineChart(){
+            // create constants for the width and length of the line chart
+            const canvasBeginX = 50;
+            const canvasBeginY = 450;
+            const canvasEndY = 50;
+            const canvasEndX = 1095;
+
             // define xScale and yScale and length of the data
             let xScale = createTransform([min_x, max_x], [canvasBeginX, canvasEndX]);
-            let yScale = createTransform([min_y - 0.5, max_y], [canvasBeginY, canvasEndY]);
+            let yScale = createTransform([min_y - 0.6, max_y + 0.1], [canvasBeginY, canvasEndY]);
             var dataLength = x_values.length;
-            // console.log(dataLength)
 
             const canvas = document.getElementById('lineChart');
             const ctx = canvas.getContext('2d');
@@ -75,7 +61,7 @@
             ctx.beginPath();
             ctx.strokeStyle = "red";
             ctx.moveTo(canvasBeginX, canvasBeginY);
-            for(var i = 0; i < dataLength; i++){
+            for(let i = 0; i < dataLength; i++){
                 ctx.lineTo(xScale(x_values[i]),yScale(y_values[i]));
             }
             ctx.stroke();
@@ -92,28 +78,44 @@
             ctx.lineTo(canvasBeginX, canvasEndY);
             ctx.stroke();
 
-            // draw labels and ticks
-            ctx.font = '15px arial';
-
-            // set the years on the x axis
+            // draw ticks on the x axis and set x_values
+            // use i*55 since the x axis is 1045 pixels long and we have 19 years
             var years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
                          2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017,
                          2018];
-
-            // use i*55 since the x axis is 1045 pixels long and we have 19 years
-            for (i = 0; i < 19; i++){
-                ctx.fillText(years[i], canvasBeginX + i*55 - 17, canvasBeginY + 25);
-             }
-
-            // draw ticks on the x axis
+            ctx.font = '15px arial';
             ctx.beginPath();
             ctx.lineWidth = 1;
-            for (i = 0; i < 20; i++){
+            for (let i = 0; i < 19; i++){
+                ctx.fillText(years[i], canvasBeginX + i*55 - 17, canvasBeginY + 25);
                 ctx.moveTo(canvasBeginX + i*55, canvasBeginY);
                 ctx.lineTo(canvasBeginX + i*55, canvasBeginY + 10);
             }
             ctx.stroke()
 
+            // draw ticks on the y axis and set values
+            // use i*(400/12) since the y axis is 400 pixels long and 11 values
+            var values = ['2.5', '3.0', '3.5', '4.0', '4.5', '5.0', '5.5', '6.0',
+                          '6.6', '7.0', '7.5', '8.0'];
+            ctx.font = '13px arial';
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 12; i++){
+                ctx.fillText(values[i], canvasBeginX - 30, canvasBeginY - i * (400 / 11) + 3);
+                ctx.moveTo(canvasBeginX, canvasBeginY - i * (400 / 11));
+                ctx.lineTo(canvasBeginX - 10, canvasBeginY - i * (400 / 11));
+            }
+            ctx.stroke()
+
+            // set title and labels on x axis and y axis
+            const middleX = 522.5;
+            const middleY = 300;
+            ctx.font = 'bold 20px arial';
+            ctx.fillText('Harmonised Unemployment Rate (HUR) in the Netherlands', 300, 20)
+            ctx.font = 'bold 15px arial';
+            ctx.fillText('Year', middleX, canvasBeginY + 50);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Unemployment rate', -middleY, canvasBeginX - 35);
 
         }
 
