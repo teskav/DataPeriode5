@@ -8,7 +8,7 @@ This script converts a csv file into a JSON file.
 import pandas as pd
 
 # Global constants for the input and output file
-INPUT_CSV = "DP_LIVE_30042019105950734.csv"
+INPUT_CSV = "DP_LIVE_01052019095745751.csv"
 OUTPUT_JSON = "data.json"
 
 def preprocess(df):
