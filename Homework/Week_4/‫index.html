@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Bar chart</title>
+      <script src="https://d3js.org/d3.v5.min.js"></script>
+      <style type="text/css">
+        div.rect {
+            display: inline-block;
+            width: 20px;
+            height: 75px;   /* We'll override this later */
+            background-color: teal;
+        }</style>
+  </head>
+  <body>
+    <!-- This is where your bar chart will go -->
+    <script>
+        d3.select("body").append("h1").text("Bar Chart");
+        d3.select("body").append("p").text("Teska Vaessen (11046341), Data Processing Assignment Week 4");
+        d3.select("body").append("p").text("This figure shows ..............");
+
+        d3.json("data.json").then(function(data) {
+            console.log(data);
+            console.log(Object.keys(data).length);
+
+            // print data
+            // d3.select("body").selectAll("p")
+            //     .data(Object.keys(data))
+            //     .enter()
+            //     .append("p")
+            //     .text(function(d) { return "Country: " + d + "----" + data[d]['KTOE']; });
+
+            // Creat the SVG
+            var width = 1000
+            var height = 500
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("width", width)
+                        .attr("height", height);
+
+            // Create bars
+            svg.selectAll("rect")
+                .data(Object.keys(data))
+                .enter()
+                .append("rect")
+                .attr("class", "rect")
+                .attr("height", function(d) {
+                    var barHeight = data[d]['KTOE'] / 100;
+                    return barHeight + "px";
+                })
+                .attr("width", 400); // 400 nog aanpassen die heeft tim even gedaan
+        })
+
+        // function(input_value) {
+        //     //Calculate something here
+        //     return output_value;
+        // }
+
+
+    </script>
+  </body>
+</html>
