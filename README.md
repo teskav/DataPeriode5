@@ -3,4 +3,4 @@
 Teska Vaessen, 11046341
 
 
-Website: https://teskav.github.io/DataPeriode5/
+Site: https://teskav.github.io/DataPeriode5/
