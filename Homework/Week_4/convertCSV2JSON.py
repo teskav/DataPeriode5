@@ -49,7 +49,6 @@ if __name__ == "__main__":
 
     # Preprocess the data
     df = preprocess(df)
-    # print(df)
 
     # Convert data to JSON file
     convert(df)
