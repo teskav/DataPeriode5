@@ -7,11 +7,28 @@
   <head>
       <title>Scatter plot</title>
       <script src= scatter.js ></script>
+      <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
       <script src="https://d3js.org/d3.v5.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
-      <style scr="scatter.css"></style>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
+      <link rel="stylesheet" type="text/css" href="scatter.css">
+      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
   </head>
-  <body bgcolor="#D2E7E6" >
+  <body>
+      <div class="btn-group pull-right">
+  				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+   						 Change data year <span class="caret"></span>
+ 				</button>
+  				<ul class="dropdown-menu" role="menu">
+   					<li><a class="m" value="2010" href="#">2010</a></li>
+    				<li><a class="m" value="2011" href="#">2011</a></li>
+    				<li><a class="m" value="2012" href="#">2012</a></li>
+    				<li><a class="m" value="2013" href="#">2013</a></li>
+    				<li><a class="m" value="2014" href="#">2014</a></li>
+                    <li><a class="m" value="2015" href="#">2015</a></li>
+  				</ul>
+			</div>
     <script>
         d3.select("body").append("h1").text("Scatter plot");
         d3.select("body").append("p").style("font-size", "14px").text("Teska Vaessen (11046341), Data Processing Assignment Week 5: D3 Scatter plot");

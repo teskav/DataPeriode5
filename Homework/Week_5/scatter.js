@@ -33,6 +33,26 @@ window.onload = function() {
         // console.log(d3.max(dataset['2010'], function(d) { return d['GDP']; }));
         // console.log(d3.min(dataset['2010'], function(d) { return d['GDP']; }))
 
+        //On click, update with new data
+		d3.selectAll(".m")
+		  .on("click", function() {
+
+			  var date = this.getAttribute("value");
+			  var str;
+			  if(date == "2010"){
+                  dataset = dataset["2010"];
+              }else if(date == "2011"){
+                  dataset = dataset["2011"];
+              }else if(date == "2012"){
+                  dataset = dataset["2012"];
+              }else if(date == "2013"){
+                  dataset = dataset["2013"];
+              }else if(date == "2014"){
+                  dataset = dataset["2014"];
+              }else{
+                  dataset = dataset["2015"];
+              }
+
         // Define xScale
         var xScale = d3.scaleLinear()
                        .domain([0, d3.max(dataset['2010'], function(d) { return d['GDP']; })])
@@ -43,8 +63,9 @@ window.onload = function() {
                        .domain([0, d3.max(dataset['2010'], function(d) { return d['Pregnancy']; })])
                        .range([svgHeight - margin.top, margin.bottom]);
 
-        createScatter(dataset, svg, xScale, yScale)
-        createAxes(dataset, svg, xScale, yScale, svgHeight, svgWidth, margin)
+        createScatter(dataset, svg, xScale, yScale, margin)
+        createAxes(dataset, svg, xScale, yScale, svgHeight, margin)
+        createLabels(svg, svgHeight, svgWidth, margin)
 
     }).catch(function(e){
         throw(e);
@@ -52,7 +73,20 @@ window.onload = function() {
 
 };
 
-function createScatter(dataset, svg, xScale, yScale){
+function createScatter(dataset, svg, xScale, yScale, margin){
+    // d3.interpolatePuBuGn
+    var colorScale = d3.scaleQuantize()
+                       .domain([0, d3.max(dataset['2010'], function(d) { return d['Violent']; })])
+                       .range(['#ffffcc','#a1dab4','#41b6c4','#2c7fb8','#253494']);
+                       // .range(d3.range(6).map(function(i) { return "q" + i + "-9"; }));
+
+    var colorLegend = d3.legendColor()
+                        .labelFormat(d3.format(".0f"))
+                        .scale(colorScale)
+                        .shapePadding(5)
+                        .shapeWidth(25)
+                        .shapeHeight(10)
+                        .labelOffset(12);
 
     svg.selectAll("circle")
        .data(dataset['2010'])
@@ -64,10 +98,16 @@ function createScatter(dataset, svg, xScale, yScale){
        .attr("cy", function(d) {
             return yScale(d['Pregnancy']);
        })
-       .attr("r", 4);
+       .attr("r", 4)
+       .style("fill", function(d, i ) { return colorScale(d['Violent']); });
+
+    svg.append("g")
+   	   .attr("class", "legend")
+   	   .attr("transform", "translate(" + 2*margin.right + "," + margin.bottom + ")")
+   	   .call(colorLegend);
 }
 
-function createAxes(dataset, svg, xScale, yScale, svgHeight, svgWidth, margin){
+function createAxes(dataset, svg, xScale, yScale, svgHeight, margin){
 
     // Create x axis
     var xAxis = d3.axisBottom(xScale);
@@ -85,6 +125,9 @@ function createAxes(dataset, svg, xScale, yScale, svgHeight, svgWidth, margin){
       .attr("transform", "translate(" + margin.left + ", 0)")
       .call(yAxis);
 
+}
+
+function createLabels(svg, svgHeight, svgWidth, margin){
     // Add x label
     svg.append('text')
        .attr('class', 'title')
@@ -93,6 +136,26 @@ function createAxes(dataset, svg, xScale, yScale, svgHeight, svgWidth, margin){
        .attr('y', svgHeight - 10)
        .attr('text-anchor', 'middle')
        .text('GDP');
+
+    // Add y label
+    svg.append('text')
+       .attr('class', 'title')
+       .attr("font-weight", "bold")
+       .attr("transform", "rotate(-90)")
+       .attr('x', -svgHeight / 2)
+       .attr('y', margin.left / 2)
+       .attr('text-anchor', 'middle')
+       .text('Pregancy iets');
+
+    // Add title
+    svg.append('text')
+       .attr('class', 'title')
+       .attr("font-size", "15px")
+       .attr("font-weight", "bold")
+       .attr('x', (svgWidth + margin.left + 10) / 2)
+       .attr('y', 11)
+       .attr('text-anchor', 'middle')
+       .text('GDP en Pregnancy ofzo blabla');
 
 }
 
@@ -271,11 +334,6 @@ function cleanData(teensViolent, teensPregnant, countryGDP){
             }
         }
     }
-
-    // if (teensViolent[country][i]['Time'] == 2010){
-    //     // console.log(teensViolent[country][i]['Datapoint']);
-    //     dataset[country] = {2010: {Violent: teensViolent[country][i]['Datapoint'], Pregnancy: 4, GDP: 3}, 2011: {Violent: 8, Pregnancy: 7, GDP: 6}};
-    // }
 
     // return the dataset
     return dataset;
