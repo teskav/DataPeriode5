@@ -1,6 +1,8 @@
 /* Name: Teska Vaessen
    Student number: 11046341
-   This file ......... */
+   This file creates an interactive scatter plot about the relationship between
+   the GDP of a country and the teen pregnancy rate. It also shows the rate of
+   teen living in a area with a high crime rate. */
 
 window.onload = function() {
 
@@ -17,11 +19,9 @@ window.onload = function() {
         countryGDP = transformResponseGDP(response[2]);
 
         dataset = cleanData(teensViolent, teensPregnant, countryGDP);
-        console.log(dataset);
-
 
         // Define variables for SVG and create SVG element
-        var svgWidth = 750;
+        var svgWidth = 800;
         var svgHeight = 500;
         var margin = {top: 50, right: 30, bottom: 30, left: 50};
         var svg = d3.select("body")
@@ -29,43 +29,45 @@ window.onload = function() {
                     .attr("width", svgWidth)
                     .attr("height", svgHeight);
 
-        // console.log(dataset['2010'][0]['GDP']);
-        // console.log(d3.max(dataset['2010'], function(d) { return d['GDP']; }));
-        // console.log(d3.min(dataset['2010'], function(d) { return d['GDP']; }))
-
-        //On click, update with new data
-		d3.selectAll(".m")
-		  .on("click", function() {
-
-			  var date = this.getAttribute("value");
-			  var str;
-			  if(date == "2010"){
-                  dataset = dataset["2010"];
-              }else if(date == "2011"){
-                  dataset = dataset["2011"];
-              }else if(date == "2012"){
-                  dataset = dataset["2012"];
-              }else if(date == "2013"){
-                  dataset = dataset["2013"];
-              }else if(date == "2014"){
-                  dataset = dataset["2014"];
-              }else{
-                  dataset = dataset["2015"];
-              }
-
+        // Set the year 2010 as default scatter plot
         // Define xScale
         var xScale = d3.scaleLinear()
-                       .domain([0, d3.max(dataset['2010'], function(d) { return d['GDP']; })])
+                       .domain([0, d3.max(dataset["2010"], function(d) { return d['GDP']; })])
                        .range([margin.left, svgWidth - margin.right]);
 
         // Define yScale
         var yScale = d3.scaleLinear()
-                       .domain([0, d3.max(dataset['2010'], function(d) { return d['Pregnancy']; })])
+                       .domain([0, d3.max(dataset["2010"], function(d) { return d['Pregnancy']; })])
                        .range([svgHeight - margin.top, margin.bottom]);
+        var date = 2010;
 
-        createScatter(dataset, svg, xScale, yScale, margin)
-        createAxes(dataset, svg, xScale, yScale, svgHeight, margin)
-        createLabels(svg, svgHeight, svgWidth, margin)
+        createScatter(dataset["2010"], svg, xScale, yScale, margin);
+        createAxes(dataset["2010"], svg, xScale, yScale, svgHeight, margin);
+        createLabels(date, svg, svgHeight, svgWidth, margin);
+
+        // Based the update code on http://bl.ocks.org/anupsavvy/9513382
+        // from Anup’s Block 9513382
+        // On click, update with new data year
+		d3.selectAll(".m")
+		  .on("click", function() {
+			  var date = this.getAttribute("value");
+              dataset_new = dataset[date];
+
+              // Define xScale
+              var xScale = d3.scaleLinear()
+                             .domain([0, d3.max(dataset_new, function(d) { return d['GDP']; })])
+                             .range([margin.left, svgWidth - margin.right]);
+
+              // Define yScale
+              var yScale = d3.scaleLinear()
+                             .domain([0, d3.max(dataset_new, function(d) { return d['Pregnancy']; })])
+                             .range([svgHeight - margin.top, margin.bottom]);
+
+              createScatter(dataset_new, svg, xScale, yScale, margin);
+              createAxes(dataset_new, svg, xScale, yScale, svgHeight, margin);
+              createLabels(date, svg, svgHeight, svgWidth, margin);
+
+          });
 
     }).catch(function(e){
         throw(e);
@@ -74,12 +76,24 @@ window.onload = function() {
 };
 
 function createScatter(dataset, svg, xScale, yScale, margin){
-    // d3.interpolatePuBuGn
-    var colorScale = d3.scaleQuantize()
-                       .domain([0, d3.max(dataset['2010'], function(d) { return d['Violent']; })])
-                       .range(['#ffffcc','#a1dab4','#41b6c4','#2c7fb8','#253494']);
-                       // .range(d3.range(6).map(function(i) { return "q" + i + "-9"; }));
+    // Remove the old dots
+    svg.selectAll("circle")
+       .remove();
 
+    // Remove the old legend and axes
+    svg.selectAll("g")
+       .remove();
+    svg.selectAll("text.legend")
+       .remove();
+
+    // Set color scale for the color of the dots
+    var colorScale = d3.scaleQuantize()
+                       .domain([0, d3.max(dataset, function(d) { return d['Violent']; })])
+                       .range(['#c7e9b4','#7fcdbb','#1d91c0','#253494','#081d58']);
+
+    // Based all legend code on https://bl.ocks.org/zanarmstrong/0b6276e033142ce95f7f374e20f1c1a7
+    // from zan’s Block 0b6276e033142ce95f7f374e20f1c1a7
+    // Set legend for the color of the dots
     var colorLegend = d3.legendColor()
                         .labelFormat(d3.format(".0f"))
                         .scale(colorScale)
@@ -88,8 +102,38 @@ function createScatter(dataset, svg, xScale, yScale, margin){
                         .shapeHeight(10)
                         .labelOffset(12);
 
+    // Based all tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
+    // from Chris Williams’s Block af5b855651ffe29bdca1
+    // Add the tooltip container to the body container
+    // it's invisible and its position/contents are defined during mouseover
+    var tooltip = d3.select("body").append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0);
+
+    // tooltip mouseover event handler
+    var tipMouseover = function(d) {
+    var color = colorScale(d['Violent']);
+    var html  = "<span style='color:" + color + ";'>" + d['Country'] + "</span><br/>";
+
+        tooltip.html(html)
+            .style("left", (d3.event.pageX + 12) + "px")
+            .style("top", (d3.event.pageY - 18) + "px")
+            .transition()
+            .duration(200)
+            .style("opacity", .9)
+
+    };
+
+    // tooltip mouseout event handler
+    var tipMouseout = function(d) {
+        tooltip.transition()
+               .duration(300)
+               .style("opacity", 0);
+    };
+
+    // Create the dots
     svg.selectAll("circle")
-       .data(dataset['2010'])
+       .data(dataset)
        .enter()
        .append("circle")
        .attr("cx", function(d) {
@@ -98,13 +142,26 @@ function createScatter(dataset, svg, xScale, yScale, margin){
        .attr("cy", function(d) {
             return yScale(d['Pregnancy']);
        })
-       .attr("r", 4)
-       .style("fill", function(d, i ) { return colorScale(d['Violent']); });
+       .attr("r", 5)
+       .style("fill", function(d, i ) { return colorScale(d['Violent']); })
+       .on("mouseover", tipMouseover)
+       .on("mouseout", tipMouseout);
 
+    // Create the legend
     svg.append("g")
    	   .attr("class", "legend")
    	   .attr("transform", "translate(" + 2*margin.right + "," + margin.bottom + ")")
    	   .call(colorLegend);
+
+    // Add title for legend
+    svg.append("text")
+       .attr("class", "legend")
+       .attr("x", 50)
+   	   .attr("y", 26)
+   	   .attr("text-anchor", "start")
+   	   .style("font-weight", "bold")
+       .style("font-size", "10px")
+   	   .text("Teens in crime area rate");
 }
 
 function createAxes(dataset, svg, xScale, yScale, svgHeight, margin){
@@ -127,7 +184,11 @@ function createAxes(dataset, svg, xScale, yScale, svgHeight, margin){
 
 }
 
-function createLabels(svg, svgHeight, svgWidth, margin){
+function createLabels(date, svg,svgHeight, svgWidth, margin){
+    // Remove old title
+    svg.selectAll("text.title")
+       .remove()
+
     // Add x label
     svg.append('text')
        .attr('class', 'title')
@@ -145,7 +206,7 @@ function createLabels(svg, svgHeight, svgWidth, margin){
        .attr('x', -svgHeight / 2)
        .attr('y', margin.left / 2)
        .attr('text-anchor', 'middle')
-       .text('Pregancy iets');
+       .text('Teen Pregnancy rate');
 
     // Add title
     svg.append('text')
@@ -155,7 +216,7 @@ function createLabels(svg, svgHeight, svgWidth, margin){
        .attr('x', (svgWidth + margin.left + 10) / 2)
        .attr('y', 11)
        .attr('text-anchor', 'middle')
-       .text('GDP en Pregnancy ofzo blabla');
+       .text('Relationship between GDP, teen pregnancy and teens living in high crime in Europe in ' + date);
 
 }
 
@@ -296,7 +357,7 @@ function transformResponseGDP(data){
 }
 
 function cleanData(teensViolent, teensPregnant, countryGDP){
-
+    // Create empty data set with the years you want data from
     var dataset = {"2010": [],
                    "2011": [],
                    "2012": [],
@@ -304,33 +365,15 @@ function cleanData(teensViolent, teensPregnant, countryGDP){
                    "2014": [],
                    "2015": []};
 
+    // Create a list with the years in your dataset
+    var years = Object.keys(dataset);
+
+    // Append all the data to your dataset
     for (country in teensViolent){
-        // console.log(teensViolent[country][0]["Datapoint"]);
-        for(var i = 0, size = teensViolent[country].length; i < size ; i++){
-            // console.log(teensViolent[country][i]['2010']);
-            if (teensViolent[country][i]['Time'] == 2010 && countryGDP[country][i]['Year'] == 2010){
-                // console.log(teensViolent[country][i]['Datapoint']);
-                dataset["2010"].push({Country: country, Violent: teensViolent[country][i]['Datapoint'], Pregnancy: teensPregnant[country][i]['Datapoint'], GDP: countryGDP[country][i]['Datapoint']});
-            }
-            if (teensViolent[country][i]['Time'] == 2011 && countryGDP[country][i]['Year'] == 2011){
-                // console.log(teensViolent[country][i]['Datapoint']);
-                dataset["2011"].push({Country: country, Violent: teensViolent[country][i]['Datapoint'], Pregnancy: teensPregnant[country][i]['Datapoint'], GDP: countryGDP[country][i]['Datapoint']});
-            }
-            if (teensViolent[country][i]['Time'] == 2012 && countryGDP[country][i]['Year'] == 2012){
-                // console.log(teensViolent[country][i]['Datapoint']);
-                dataset["2012"].push({Country: country, Violent: teensViolent[country][i]['Datapoint'], Pregnancy: teensPregnant[country][i]['Datapoint'], GDP: countryGDP[country][i]['Datapoint']});
-            }
-            if (teensViolent[country][i]['Time'] == 2013 && countryGDP[country][i]['Year'] == 2013){
-                // console.log(teensViolent[country][i]['Datapoint']);
-                dataset["2013"].push({Country: country, Violent: teensViolent[country][i]['Datapoint'], Pregnancy: teensPregnant[country][i]['Datapoint'], GDP: countryGDP[country][i]['Datapoint']});
-            }
-            if (teensViolent[country][i]['Time'] == 2014 && countryGDP[country][i]['Year'] == 2014){
-                // console.log(teensViolent[country][i]['Datapoint']);
-                dataset["2014"].push({Country: country, Violent: teensViolent[country][i]['Datapoint'], Pregnancy: teensPregnant[country][i]['Datapoint'], GDP: countryGDP[country][i]['Datapoint']});
-            }
-            if (teensViolent[country][i]['Time'] == 2015 && countryGDP[country][i]['Year'] == 2015){
-                // console.log(teensViolent[country][i]['Datapoint']);
-                dataset["2015"].push({Country: country, Violent: teensViolent[country][i]['Datapoint'], Pregnancy: teensPregnant[country][i]['Datapoint'], GDP: countryGDP[country][i]['Datapoint']});
+        for (element in years){
+            let year = years[element];
+            if (teensViolent[country][element]['Time'] == year && countryGDP[country][element]['Year'] == year){
+                dataset[year].push({Country: country, Violent: teensViolent[country][element]['Datapoint'], Pregnancy: teensPregnant[country][element]['Datapoint'], GDP: countryGDP[country][element]['Datapoint']});
             }
         }
     }

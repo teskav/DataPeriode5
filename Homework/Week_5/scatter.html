@@ -1,6 +1,8 @@
 <!-- Name: Teska Vaessen
      Studentnumber: 11046341
-     This file ......... -->
+     This file creates an interactive scatter plot about the relationship between
+     the GDP of a country and the teen pregnancy rate. It also shows the rate of
+     teen living in a area with a high crime rate. -->
 
 <!DOCTYPE html>
 <html>
@@ -10,7 +12,6 @@
       <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
       <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
       <script src="https://d3js.org/d3.v5.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
       <link rel="stylesheet" type="text/css" href="scatter.css">
       <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -18,7 +19,7 @@
   <body>
       <div class="btn-group pull-right">
   				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-   						 Change data year <span class="caret"></span>
+   						 Choose year to show <span class="caret"></span>
  				</button>
   				<ul class="dropdown-menu" role="menu">
    					<li><a class="m" value="2010" href="#">2010</a></li>
@@ -30,11 +31,11 @@
   				</ul>
 			</div>
     <script>
-        d3.select("body").append("h1").text("Scatter plot");
+        d3.select("body").append("h1").text("Scatter plot of GDP and Teen Pregnancy Rate");
         d3.select("body").append("p").style("font-size", "14px").text("Teska Vaessen (11046341), Data Processing Assignment Week 5: D3 Scatter plot");
-
-
+        d3.select("body").append("p").style("font-size", "14px").text("This figure shows the relationship between the GDP of a country and the teen pregnancy rate. It also shows the rate of teens living in an area with a high crime rate.");
     </script>
+    <span>Obtained the data from <a href="https://data.oecd.org/">OECD</a></span>
   </body>
 
 </html>
