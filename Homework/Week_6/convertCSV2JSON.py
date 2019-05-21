@@ -31,13 +31,17 @@ def preprocess(df, codes):
     df = df.drop(["Country_name"], axis=1)
 
     # Rename the code column
-    df = df.rename(index=str, columns={"code_3digit": "Code"})
+    df = df.rename(index=str, columns={"code_3digit": "Code", "Pop. Density (per sq. mi.)": "PopulationDensity"})
 
-    # Set country as index
-    df = df.set_index('Country')
+    # Change the order of the columns
+    columnsTitles=["Code", "Country", "PopulationDensity", "Birthrate", "Deathrate"]
+    df = df.reindex(columns=columnsTitles)
 
     # Delete rows with missing values
     df = df.dropna()
+
+    # Set country as index
+    df = df.set_index("Code")
 
     return df
 
@@ -51,7 +55,7 @@ def convert(df):
 if __name__ == "__main__":
 
     # Load csv file, drop columns you don't use and replace comma's with dots
-    df = pd.read_csv(INPUT_CSV, decimal=",", usecols=["Country","Population", "Birthrate", "Deathrate"])
+    df = pd.read_csv(INPUT_CSV, decimal=",", usecols=["Country","Pop. Density (per sq. mi.)", "Birthrate", "Deathrate"])
     codes = pd.read_csv(INPUT_CODES, usecols=["Country_name","code_3digit"])
 
     # Preprocess the data

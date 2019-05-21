@@ -5,24 +5,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <title>Linked views</title>
       <meta charset="utf-8">
+      <title>Linked views</title>
+
+      <!-- Import D3 V5 -->
+      <script src="https://d3js.org/d3.v5.min.js"></script>
+      <script>
+          d3v5 = d3;
+          window.d3 = null;
+      </script>
+
+      <!-- Import D3 V3 and TopoJSON -->
+      <script src="https://d3js.org/d3.v3.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+      <script src="datamaps.world.min.js"></script>
+      <script>
+        d3v3 = d3;
+        window.d3 = null;
+      </script>
+
       <!-- <script type="text/javascript" src="//code.jquery.com/jquery-latest.min.js"></script> -->
       <script src= linkedviews.js ></script>
-      <script src="https://d3js.org/d3.v5.min.js"></script>
-      <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
-      <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-      <script src="/datamaps.world.min.js"></script>
       <link rel="stylesheet" type="text/css" href="linkedviews.css">
   </head>
   <body>
-
     <script>
-        d3.select("body").append("h1").text("Linked views");
-        d3.select("body").append("p").style("font-size", "14px").text("Teska Vaessen (11046341), Data Processing Assignment Week 6: Linked Views");
-        d3.select("body").append("p").style("font-size", "14px").text("This figure shows ........");
+        d3v5.select("body").append("h1").text("Linked views");
+        d3v5.select("body").append("p").style("font-size", "14px").text("Teska Vaessen (11046341), Data Processing Assignment Week 6: Linked Views");
+        d3v5.select("body").append("p").style("font-size", "14px").text("This figure shows ........");
     </script>
-    <div id="container" style="position: relative; width: 500px; height: 300px;"></div>
+    <div id="container" style="position: relative; width: 1200px; height: 550px;"></div>
     <!-- <span>Obtained the data from <a href="https://data.oecd.org/">OECD</a></span> -->
   </body>
 
