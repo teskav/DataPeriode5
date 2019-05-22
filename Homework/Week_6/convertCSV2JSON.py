@@ -43,6 +43,9 @@ def preprocess(df, codes):
     # Set country as index
     df = df.set_index("Code")
 
+    # Drop countries which are not on the world map
+    df = df.drop(['MCO', 'SGP', 'GIB', 'BMU', 'MLT', 'BHR', 'GGY', 'JEY', 'MDV', 'NRU'])
+
     return df
 
 def convert(df):
