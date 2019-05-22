@@ -41,7 +41,15 @@ window.onload = function() {
 
         // Create world map
         var map = new Datamap({element: document.getElementById("container"),
-            data: dataset
+            data: dataset,
+            geographyConfig: {
+            popupTemplate: function(geo, dataset) {
+                return ['<div class="hoverinfo"><strong>',
+                        'Population density in ' + geo.properties.name,
+                        ': ' + dataset['PopulationDensity'],
+                        '</strong></div>'].join('');
+                    }
+                }
         });
 
 
