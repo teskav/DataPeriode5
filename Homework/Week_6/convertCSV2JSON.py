@@ -48,6 +48,28 @@ def preprocess(df, codes):
 
     return df
 
+def add_average(df):
+    """
+    This functions adds the world average to the dataframe.
+    """
+    # Calculate the world average birthrate, deathrate and population
+    average_birthrate = df["Birthrate"].mean()
+    average_deathrate = df["Deathrate"].mean()
+    average_population = df["PopulationDensity"].mean()
+
+    # Set dataframe for the world
+    world = pd.DataFrame({"Country": ["World average"],
+                          "PopulationDensity": [average_population],
+                          "Birthrate": [average_birthrate],
+                          "Deathrate": [average_deathrate],
+                          "Code": ["WLD"]})
+    world = world.set_index("Code")
+
+    # Add world dataframe to dataset
+    df = df.append(world, sort=False)
+
+    return df
+
 def convert(df):
     """
     This function converts a dataframe to a JSON file.
@@ -63,6 +85,9 @@ if __name__ == "__main__":
 
     # Preprocess the data
     df = preprocess(df, codes)
+
+    # Add the world average to the dataframe
+    df = add_average(df)
 
     # Convert data to JSON file
     convert(df)

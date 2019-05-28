@@ -37,6 +37,8 @@ window.onload = function() {
     });
 
     function worldmap(dataset, maxBirthrate) {
+        // Add bar chart of the world average
+        barchart(dataset["WLD"], maxBirthrate);
 
         // Set colorscale for the world map (threshold domain based on the data)
         var colorScale = d3v5.scaleThreshold()
@@ -71,6 +73,8 @@ window.onload = function() {
                     }
                     else {
                         // Create barchart of this country
+                        updateBarchart();
+                        // svg_barchart.selectAll("*").remove();
                         barchart(dataset[country], maxBirthrate);
                         // alert(geography.properties.name);
                     }
@@ -82,10 +86,10 @@ window.onload = function() {
 
     function barchart(dataset, maxBirthrate) {
         // Define variables for SVG of the barchart and create SVG
-        var svgWidth = 150;
+        var svgWidth = 300;
         var svgHeight = 250;
         var barPadding = 10;
-        var margin = {top: 20, right: 30, bottom: 20, left: 50};
+        var margin = {top: 20, right: 75, bottom: 20, left: 75};
         var svg_barchart = d3v5.select("body")
                                .append("svg")
                                .attr("width", svgWidth)
@@ -97,7 +101,7 @@ window.onload = function() {
         // Define xScale
         var xScale = d3v5.scaleBand()
                          .domain(x_values.map(function(d) {return d; }))
-                         .range([margin.left, svgWidth]);
+                         .range([margin.left, svgWidth - margin.right]);
 
         // Define yScale
         var yScale = d3v5.scaleLinear()
@@ -121,7 +125,7 @@ window.onload = function() {
                     .append("rect")
                     .attr("class", "rect")
                     .attr("x", function(d) {
-                        return xScale(d) + "px";
+                        return xScale(d) + barPadding / 2 + "px";
                     })
                     .attr("y", function(d) {
                          return yScale(dataset[d]) - margin.bottom + margin.top + "px";
@@ -129,7 +133,7 @@ window.onload = function() {
                     .attr("height", function(d) {
                          return svgHeight - margin.top - yScale(dataset[d]) + "px";
                      })
-                    .attr("width", (svgWidth - margin.left) / 2 - barPadding + "px")
+                    .attr("width", (svgWidth - margin.left - margin.right) / 2 - barPadding + "px")
                     .on('mouseover', tip.show)
                     .on('mouseout', tip.hide);
 
@@ -146,9 +150,9 @@ window.onload = function() {
        var yAxis = d3v5.axisLeft(yScale);
 
        svg_barchart.append("g")
-          .attr("class", "axis")
-          .attr("transform", "translate(" + margin.left + ", " + -(margin.bottom - margin.top)  + ")")
-          .call(yAxis);
+                   .attr("class", "axis")
+                   .attr("transform", "translate(" + margin.left + ", " + -(margin.bottom - margin.top)  + ")")
+                   .call(yAxis);
 
       // VRAGEN TIM OM ASSEN MOETEN WANT IS LELIJKER
       // // Add x label
@@ -175,10 +179,13 @@ window.onload = function() {
                   .attr('class', 'title')
                   .attr("font-size", "15px")
                   .attr("font-weight", "bold")
-                  .attr('x', (svgWidth + margin.left + 10) / 2)
+                  .attr('x', (svgWidth + margin.left - margin.right + 10) / 2)
                   .attr('y', 11)
                   .attr('text-anchor', 'middle')
                   .text(dataset['Country']);
+    }
+
+    function updateBarchart(){
     }
 
 };
