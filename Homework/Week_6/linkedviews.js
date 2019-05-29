@@ -26,13 +26,13 @@ window.onload = function() {
         // Define variables for SVG of the barchart and create SVG
         var svg = {width: 525, height: 250, barPadding: 10};
         var margin = {top: 20, right: 125, bottom: 20, left: 250};
-        var svg_barchart = d3v5.select("#barchart")
+        var svg_barchart = d3v5.select("#bars")
                                .append("svg")
                                .attr("width", svg.width)
                                .attr("height", svg.height);
 
         // Create seperate svg for the barchart of the world average
-        var svg_average = d3v5.select("#barchart")
+        var svg_average = d3v5.select("#bars")
                                .append("svg")
                                .attr("width", svg.width)
                                .attr("height", svg.height);
