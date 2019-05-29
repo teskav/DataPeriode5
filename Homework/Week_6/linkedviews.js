@@ -247,7 +247,7 @@ window.onload = function() {
                   .attr('x', (svg.width + margin.left - margin.right + 10) / 2)
                   .attr('y', 11)
                   .attr('text-anchor', 'middle')
-                  .text(dataset['Country']);
+                  .text("Rates " + dataset['Country']);
     }
 
     function removeBarchart(svg_barchart){
