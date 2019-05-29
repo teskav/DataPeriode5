@@ -37,10 +37,11 @@
     <script>
         d3v5.select("body").append("h1").text("Population in the world");
         d3v5.select("body").append("p").style("font-size", "13px").text("Teska Vaessen (11046341), Data Processing Assignment Week 6: Linked Views");
-        d3v5.select("body").append("p").style("font-size", "14px").text("This world map below shows the population density (per square mile) per country in the world. Some countries have a really high population density. But do those countries also have a high birthrate and a low deathrate? Click on a country to find out if this is true! You can also compare those rates with the world average rates.");
+        d3v5.select("body").append("p").style("font-size", "14px").text("This world map below shows the population density (per square mile) per country in the world. Some countries have a really high population density. But do those countries also have a high birthrate and a low deathrate? Click on a country to see the birth- and deathrate and find out if this is true!");
     </script>
 
     <div id="container" style="position: relative; width: 1100px; height: 500px;"></div>
+    <p> Compare the birthrate and deathrate of your chosen country with the world average. Is there maybe a connection between the population density and the rates?</p>
     <div id="barchart"></div>
     <div style="position: relative; bottom: 5px;">
         <span>Obtained the data from <a href="https://www.kaggle.com/fernandol/countries-of-the-world">Kaggle</a></span>
