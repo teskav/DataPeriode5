@@ -12,9 +12,6 @@ INPUT_CSV = "countries_of_the_world.csv"
 INPUT_CODES = "country_code.csv"
 OUTPUT_JSON = "data.json"
 
-# data: https://www.kaggle.com/fernandol/countries-of-the-world/downloads/countries-of-the-world.zip/1
-# codes: https://www.kaggle.com/koki25ando/country-code/downloads/country-code.zip/1
-
 def preprocess(df, codes):
 
     # Remove spaces at the end of the countries

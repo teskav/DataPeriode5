@@ -1,6 +1,9 @@
 /* Name: Teska Vaessen
    Student number: 11046341
-   This file .......... */
+   This fileThis file creates an interactive world map. This map shows the population
+   density. When you click on a country you can see the birth- and deathrate
+   of that specific country in a barchart. This file also shows the world
+   average birth- and deathrate so you can compare. */
 
 window.onload = function() {
 
@@ -8,7 +11,6 @@ window.onload = function() {
 
     Promise.all(requests).then(function(response) {
         var dataset = response[0];
-        console.log(dataset);
 
         // Make variable list for the birthrate and deathrate
         var deathrate = [];
@@ -24,18 +26,16 @@ window.onload = function() {
         // Define variables for SVG of the barchart and create SVG
         var svg = {width: 525, height: 250, barPadding: 10};
         var margin = {top: 20, right: 125, bottom: 20, left: 250};
-        var svg_barchart = d3v5.select("body")
+        var svg_barchart = d3v5.select("#barchart")
                                .append("svg")
                                .attr("width", svg.width)
                                .attr("height", svg.height);
 
         // Create seperate svg for the barchart of the world average
-        var svg_average = d3v5.select("body")
+        var svg_average = d3v5.select("#barchart")
                                .append("svg")
                                .attr("width", svg.width)
                                .attr("height", svg.height);
-
-        // dataset["USA"]["fillColor"] = "#FF6500"
 
         // Set default barchart (Netherlands) and create world average barchart
         barchart(dataset['NLD'], maxBirthrate, svg, margin, svg_barchart);
@@ -77,7 +77,6 @@ window.onload = function() {
             done: function(datamap) {
                 datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
                     country = geography.id;
-                    console.log(dataset[country]);
                     if (dataset[country] == undefined) {
                         alert("This country has no data available. Click on another country.");
                     }
@@ -85,7 +84,6 @@ window.onload = function() {
                         // Remove old barchart and vreate new barchart of selected country
                         removeBarchart(svg_barchart);
                         barchart(dataset[country], maxBirthrate, svg, margin, svg_barchart);
-                        // alert(geography.properties.name);
                     }
                 });
             }
@@ -110,7 +108,7 @@ window.onload = function() {
         // Based the legend code on https://bl.ocks.org/mbostock/4573883
         // from Mike Bostock’s Block 4573883
         var x = d3v5.scaleLinear()
-                    .domain([0, 1000])
+                    .domain([0, 1100])
                     .range([585, 1085]);
 
         var xAxis = d3v5.axisBottom(x, 440)

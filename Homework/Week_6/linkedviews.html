@@ -1,8 +1,9 @@
 <!-- Name: Teska Vaessen
      Studentnumber: 11046341
      This file creates an interactive world map. This map shows the population
-     density. When you click on a countr you can see the birth- and deathrate
-     of that specific country. -->
+     density. When you click on a country you can see the birth- and deathrate
+     of that specific country in a barchart. This file also shows the world
+     average birth- and deathrate so you can compare.-->
 
 <!DOCTYPE html>
 <html>
@@ -29,17 +30,22 @@
 
       <!-- <script type="text/javascript" src="//code.jquery.com/jquery-latest.min.js"></script> -->
       <script src= linkedviews.js ></script>
+      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
       <link rel="stylesheet" type="text/css" href="linkedviews.css">
   </head>
   <body>
     <script>
-        d3v5.select("body").append("h1").text("Linked views");
-        d3v5.select("body").append("p").style("font-size", "14px").text("Teska Vaessen (11046341), Data Processing Assignment Week 6: Linked Views");
-        d3v5.select("body").append("p").style("font-size", "14px").text("This figure shows the population density in the world.");
+        d3v5.select("body").append("h1").text("Population in the world");
+        d3v5.select("body").append("p").style("font-size", "13px").text("Teska Vaessen (11046341), Data Processing Assignment Week 6: Linked Views");
+        d3v5.select("body").append("p").style("font-size", "14px").text("This world map below shows the population density (per square mile) per country in the world. Some countries have a really high population density. But do those countries also have a high birthrate and a low deathrate? Click on a country to find out if this is true! You can also compare those rates with the world average rates.");
     </script>
+
     <div id="container" style="position: relative; width: 1100px; height: 500px;"></div>
-     <!-- style="position: relative; width: 1200px; height: 550px;" -->
-    <!-- <span>Obtained the data from <a href="https://data.oecd.org/">OECD</a></span> -->
+    <div id="barchart"></div>
+    <div style="position: relative; bottom: 5px;">
+        <span>Obtained the data from <a href="https://www.kaggle.com/fernandol/countries-of-the-world">Kaggle</a></span>
+        <p>Downloaded country 3 digit codes from <a href="https://www.kaggle.com/koki25ando/country-code/">Kaggle</a></p>
+    </div>
   </body>
 
 </html>
