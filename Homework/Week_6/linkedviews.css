@@ -1,6 +1,10 @@
 /* Name: Teska Vaessen
    Studentnumber: 11046341 */
 
+body {
+    background-color: #eaeae1;
+}
+
 .rect {
     fill: MediumSeaGreen ;
 }

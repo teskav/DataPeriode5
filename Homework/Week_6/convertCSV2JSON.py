@@ -17,10 +17,6 @@ OUTPUT_JSON = "data.json"
 
 def preprocess(df, codes):
 
-    # print(df.head())
-    # print(df.dtypes)
-    # print(codes.dtypes)
-
     # Remove spaces at the end of the countries
     df["Country"] = df["Country"].str.strip(" ")
 
@@ -53,9 +49,9 @@ def add_average(df):
     This functions adds the world average to the dataframe.
     """
     # Calculate the world average birthrate, deathrate and population
-    average_birthrate = df["Birthrate"].mean()
-    average_deathrate = df["Deathrate"].mean()
-    average_population = df["PopulationDensity"].mean()
+    average_birthrate = round(df["Birthrate"].mean(), 2)
+    average_deathrate = round(df["Deathrate"].mean(), 2)
+    average_population = round(df["PopulationDensity"].mean(), 1)
 
     # Set dataframe for the world
     world = pd.DataFrame({"Country": ["World average"],
